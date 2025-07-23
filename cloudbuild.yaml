@@ -40,4 +40,4 @@ steps:
       - '--allow-unauthenticated' # Allow unauthenticated access for this lab
 
 options: # This section defines global build options
-	logging: CLOUD_LOGGING_ONLY # This is the logging option
+  logging: CLOUD_LOGGING_ONLY # This is the logging option
