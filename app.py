@@ -20,8 +20,10 @@ def list_products():
 @app.route('/products/<sku>', methods=['GET'])
 def get_product_stock(sku):
     product = inventory.get(sku)
-    if product:
+    if product and product != 'hello':
         return jsonify(product)
+    if product == 'hello':
+        return 'hello world'
     return jsonify({"message": "Product not found"}), 404
 
 @app.route('/products/<sku>/add', methods=['POST'])
