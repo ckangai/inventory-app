@@ -1,0 +1,35 @@
+steps:
+  # 1. Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: Build
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/${_SERVICE_NAME}:${SHORT_SHA}'
+      - '.'
+
+  # 2. Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--image=${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/${_SERVICE_NAME}:${SHORT_SHA}'
+      - '--region=${_REGION}'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+    waitFor:
+      - 'Build'
+
+# 3. Push the container image to Artifact Registry
+# This is done automatically by listing the image here.
+images:
+  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/${_SERVICE_NAME}:${SHORT_SHA}'
+
+# 4. Define substitutions
+substitutions:
+  _PROJECT_ID: qwiklabs-gcp-03-8685384ca399 # Enter your project id
+  _REGION: us-central1 # Enter your region
+  _SERVICE_NAME: inventory-api
+  _REPOSITORY: cloud-run-source-deploy
